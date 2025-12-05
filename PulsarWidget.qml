@@ -14,7 +14,7 @@ PluginComponent {
     property int stage: 1
     property bool connected: false
 
-    property int refreshInterval: pluginData.refreshInterval || 10000
+    property int refreshInterval: pluginData.refreshInterval || 15000
 
     Timer {
         id: startupTimer
@@ -37,15 +37,25 @@ PluginComponent {
 
     function parseInfo(output) {
         if (output.includes("Found: Pulsar X3")) {
-            root.connected = true
-
             var batteryMatch = output.match(/Battery:\s*(\d+)%/)
-            if (batteryMatch) root.battery = parseInt(batteryMatch[1])
-
             var dpiMatch = output.match(/DPI:\s*(\d+)\s*\(stage\s*(\d+)\)/)
-            if (dpiMatch) {
-                root.dpi = parseInt(dpiMatch[1])
-                root.stage = parseInt(dpiMatch[2])
+
+            // Validate data - ignore garbage responses
+            if (batteryMatch && dpiMatch) {
+                var newBattery = parseInt(batteryMatch[1])
+                var newDpi = parseInt(dpiMatch[1])
+                var newStage = parseInt(dpiMatch[2])
+
+                // Sanity checks: battery 1-100, dpi 50-26000, stage 1-6
+                if (newBattery >= 1 && newBattery <= 100 &&
+                    newDpi >= 50 && newDpi <= 26000 &&
+                    newStage >= 1 && newStage <= 6) {
+                    root.battery = newBattery
+                    root.dpi = newDpi
+                    root.stage = newStage
+                    root.connected = true
+                }
+                // If validation fails, keep previous values
             }
         } else {
             root.connected = false
