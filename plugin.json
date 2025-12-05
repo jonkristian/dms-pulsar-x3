@@ -2,11 +2,14 @@
   "id": "pulsarX3",
   "name": "Pulsar X3 Mouse",
   "description": "Monitor and control your Pulsar X3 gaming mouse",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "author": "jonkristian",
   "type": "widget",
   "component": "./PulsarWidget.qml",
   "settings": "./PulsarSettings.qml",
   "icon": "mouse",
-  "permissions": ["settings_read", "settings_write"]
+  "permissions": [
+    "settings_read",
+    "settings_write"
+  ]
 }
